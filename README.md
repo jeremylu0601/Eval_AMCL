@@ -1,6 +1,7 @@
 # Eval_AMCL
 
-Here are some scripts to evaluate the performance of AMCL on GPU and CPU  a ros node to record the data from Gazebo and AMCL.
+Some scripts to evaluate the performance of AMCL on GPU and CPU  
+A ROS node to record the data from Gazebo and AMCL.
 
 1.  The Gazebo data is in gt.csv and AMCL data is in amcl.csv.
 
