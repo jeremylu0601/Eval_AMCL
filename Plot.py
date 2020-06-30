@@ -48,7 +48,7 @@ def process_raw_data(data_path,gt_path):
         x_gt=gt[j,1]+(gt[j+1,1]-gt[j,1])*((data[index,0]-gt[j,0])/(gt[j+1,0]-gt[j,0]))
         y_gt=gt[j,2]+(gt[j+1,2]-gt[j,2])*((data[index,0]-gt[j,0])/(gt[j+1,0]-gt[j,0]))
         
-        output[i,0]=np.abs(data[index,0]-start) #the time started from the first AMCL data
+        output[i,0]=np.abs(data[index,0]-start) #the time started from the first AMCL data after clicking "2D Navi Goal"
         output[i,1]=np.abs(data[index,1]-x_gt)
         output[i,2]=np.abs(data[index,2]-y_gt)
 
@@ -74,12 +74,12 @@ def eval_cg(path,output,i):
     data_path=path+"/cpu/1/amcl.csv"
     gt_path=path+"/cpu/1/gt.csv"
     output_c,rt=process_raw_data(data_path,gt_path)
-
     output[i,1]=rt
-
     output[i,7]=np.mean(output_c,axis=0)[1]
     output[i,9]=np.mean(output_c,axis=0)[2]
     output[i,11]=np.mean(output_c,axis=0)[3]
+    # calculate the mean error and mean running time on travel 1 while AMCL is on CPU
+    
     data_path=path+"/gpu/1/amcl.csv"
     gt_path=path+"/gpu/1/gt.csv"
     output_g,rt=process_raw_data(data_path,gt_path)
@@ -87,7 +87,7 @@ def eval_cg(path,output,i):
     output[i,10]=np.mean(output_g,axis=0)[2]
     output[i,12]=np.mean(output_g,axis=0)[3]
     output[i,2]=rt
-
+    # calculate the mean error and mean running time on travel 1 while AMCL is on GPU
 
 
 
@@ -98,6 +98,7 @@ def eval_cg(path,output,i):
     output[i,15]=np.mean(output_c,axis=0)[2]
     output[i,17]=np.mean(output_c,axis=0)[3]
     output[i,3]=rt
+    # calculate the mean error and mean running time on travel 2 while AMCL is on CPU
 
     data_path=path+"/gpu/2/amcl.csv"
     gt_path=path+"/gpu/2/gt.csv"
@@ -106,7 +107,7 @@ def eval_cg(path,output,i):
     output[i,16]=np.mean(output_g,axis=0)[2]
     output[i,18]=np.mean(output_g,axis=0)[3]
     output[i,4]=rt
-
+    # calculate the mean error and mean running time on travel 2 while AMCL is on GPU
 
 
     data_path=path+"/cpu/3/amcl.csv"
@@ -116,6 +117,8 @@ def eval_cg(path,output,i):
     output[i,21]=np.mean(output_c,axis=0)[2]
     output[i,23]=np.mean(output_c,axis=0)[3]
     output[i,5]=rt
+    # calculate the mean error and mean running time on travel 3 while AMCL is on CPU
+    
     data_path=path+"/gpu/3/amcl.csv"
     gt_path=path+"/gpu/3/gt.csv"
     output_g,rt=process_raw_data(data_path,gt_path)
@@ -123,6 +126,8 @@ def eval_cg(path,output,i):
     output[i,22]=np.mean(output_g,axis=0)[2]
     output[i,24]=np.mean(output_g,axis=0)[3]
     output[i,6]=rt
+    # calculate the mean error and mean running time on travel 3 while AMCL is on GPU
+    
     return 0
 
 if __name__ == "__main__":
