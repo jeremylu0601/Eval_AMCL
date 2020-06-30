@@ -44,4 +44,12 @@
        1, 2, 3 mean 3 travels (paths)
        
        Please execute the script in the location where the Plot.py is. 
+       
+       After the execution, there are supposed to be 4 images like below
+       
+       ![image](https://github.com/jeremylu0601/Eval_AMCL/blob/master/images/Running_Time.png)
+       ![image](https://github.com/jeremylu0601/Eval_AMCL/blob/master/images/Travel_1.png)
+       
+       ![image](https://github.com/jeremylu0601/Eval_AMCL/blob/master/images/Travel_2.png)
+       ![image](https://github.com/jeremylu0601/Eval_AMCL/blob/master/images/Travel_3.png)
 
