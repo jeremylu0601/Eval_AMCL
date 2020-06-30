@@ -5,19 +5,28 @@ import csv
 from scipy.spatial.transform import Rotation as R
 
 def process_raw_data(data_path,gt_path):
+    #Calculate the error and running time on a travel
+    
     data=np.loadtxt(data_path,dtype=np.float,delimiter=',')
     gt=np.loadtxt(gt_path,dtype=np.float,delimiter=',')
     output=np.zeros((data.shape[0]-1,4))
+    # The firt data from AMCL is discarded because it is stored when Save_Data.py is executed.
+    # If we used it to calculate the running time, the mean running time would be boosted.
+    # In other words, the time from executing Save_Data.py to clicking "2D Navi Goal" is taken into account.
+    
     start=data[1,0]
     j=0
     rt_ult=np.zeros((2,1))
+    # It is used to stored the running time
+    
     for i in range(data.shape[0]-1):
         index=i+1
-
         while gt[j,0]>data[index,0]:
             index=index+1
         while gt[j+1,0]<data[index,0] :
             j=j+1
+        # Interpolation is used to calculate the error, so we have to make sure that index-th AMCL data happened between j-th and (j+1)-th Gazebo data
+        # i.e., gt[j,0]<data[index,0]<gt[j+1,0]
 
         last_gt=R.from_quat([0,0,gt[j,3],gt[j,4]])
         next_gt=R.from_quat([0,0,gt[j+1,3],gt[j+1,4]])
@@ -25,22 +34,21 @@ def process_raw_data(data_path,gt_path):
         b=next_gt.as_euler('xyz')
         data_angle=R.from_quat([0,0,data[index,3],data[index,4]])
         c=data_angle.as_euler('xyz')
-
-
         gap=b[2]-a[2]
         if gap>np.pi:
             gap=gap-2*np.pi
         if gap<-1*np.pi:
             gap=gap+2*np.pi
         gt_angle=a[2]+gap*((data[index,0]-gt[j,0])/(gt[j+1,0]-gt[j,0]))
-
         if gt_angle>np.pi:
             gt_angle=gt_angle-2*np.pi
         if gt_angle<-1*np.pi:
             gt_angle=gt_angle+2*np.pi
+            
         x_gt=gt[j,1]+(gt[j+1,1]-gt[j,1])*((data[index,0]-gt[j,0])/(gt[j+1,0]-gt[j,0]))
         y_gt=gt[j,2]+(gt[j+1,2]-gt[j,2])*((data[index,0]-gt[j,0])/(gt[j+1,0]-gt[j,0]))
-        output[i,0]=np.abs(data[index,0]-start)
+        
+        output[i,0]=np.abs(data[index,0]-start) #the time started from the first AMCL data
         output[i,1]=np.abs(data[index,1]-x_gt)
         output[i,2]=np.abs(data[index,2]-y_gt)
 
@@ -61,6 +69,8 @@ def process_raw_data(data_path,gt_path):
 
 
 def eval_cg(path,output,i):
+    # Put the mean error in the output matrix for a specific number of particles
+    
     data_path=path+"/cpu/1/amcl.csv"
     gt_path=path+"/cpu/1/gt.csv"
     output_c,rt=process_raw_data(data_path,gt_path)
@@ -117,6 +127,10 @@ def eval_cg(path,output,i):
 
 if __name__ == "__main__":
 
+    #--------------------------
+    # feel free to change the value here
+    # make sure the names of folders match the values here
+    # like there is folder named as "500"
     output=np.zeros((7,25))
     output[0,0]=500
     output[1,0]=1000
@@ -125,6 +139,8 @@ if __name__ == "__main__":
     output[4,0]=6000
     output[5,0]=8000
     output[6,0]=10000
+    #--------------------------
+    
 
     for i in range(output.shape[0]):
         num=int(output[i,0])
@@ -143,7 +159,7 @@ if __name__ == "__main__":
     plt.subplot(3,1,3)
     plt.plot(output[:,0], output[:,5],'b*--',output[:,0], output[:,6],'r*--')
     plt.ylabel('Travel 3')
-    plt.xlabel('Number of Particle')
+    plt.xlabel('Number of Particles')
     plt.legend(('cpu','gpu'))
     plt.savefig('Running_Time.png')
 
@@ -158,7 +174,7 @@ if __name__ == "__main__":
     plt.subplot(3,1,3)
     plt.plot(output[:,0], output[:,11],'b*--',output[:,0], output[:,12],'r*--')
     plt.ylabel('Error in Theta')
-    plt.xlabel('Number of Particle')
+    plt.xlabel('Number of Particles')
     plt.legend(('cpu','gpu'))
     plt.savefig('Travel_1.png')
 
@@ -174,7 +190,7 @@ if __name__ == "__main__":
     plt.subplot(3,1,3)
     plt.plot(output[:,0], output[:,17],'b*--',output[:,0], output[:,18],'r*--')
     plt.ylabel('Error in Theta')
-    plt.xlabel('Number of Particle')
+    plt.xlabel('Number of Particles')
     plt.legend(('cpu','gpu'))
     plt.savefig('Travel_2.png')
 
@@ -190,6 +206,6 @@ if __name__ == "__main__":
     plt.subplot(3,1,3)
     plt.plot(output[:,0], output[:,23],'b*--',output[:,0], output[:,24],'r*--')
     plt.ylabel('Error in Theta')
-    plt.xlabel('Number of Particle')
+    plt.xlabel('Number of Particles')
     plt.legend(('cpu','gpu'))
     plt.savefig('Travel_3.png')
