@@ -41,5 +41,7 @@
       
        500, 1000, … mean the number of particles, i.e., the value of max_particles and min_particles
        
-       1, 2, 3 mean 3 travels
+       1, 2, 3 mean 3 travels (paths)
+       
+       Please execute the script in the location where the Plot.py is. 
 
