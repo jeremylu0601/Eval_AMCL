@@ -69,7 +69,7 @@ def process_raw_data(data_path,gt_path):
 
 
 def eval_cg(path,output,i):
-    # Put the mean error in the output matrix for a specific number of particles
+    # Put the mean error and mean running time in the output matrix for a specific number of particles
     
     data_path=path+"/cpu/1/amcl.csv"
     gt_path=path+"/cpu/1/gt.csv"
@@ -144,8 +144,8 @@ if __name__ == "__main__":
 
     for i in range(output.shape[0]):
         num=int(output[i,0])
-        path=str(num)
-        eval_cg(path,output,i)
+        path=str(num)        # define the path as the number of particles, so we can search the correponding folder
+        eval_cg(path,output,i)  # Put the mean error and mean running time in the output matrix for a specific number of particles
     
 
     plt.figure()
