@@ -21,7 +21,7 @@ def callback(data):
     rospy.loginfo('gt')
 
 def listener():
-    rospy.init_node('Eval_AMCL', anonymous=True)
+    rospy.init_node('DATA_SAVE', anonymous=True)
     rospy.Subscriber('gazebo/model_states', ModelStates, callback)
     rospy.Subscriber('amcl_pose', PoseWithCovarianceStamped, callback1)
     rospy.spin()
